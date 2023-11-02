@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover more about Niko - a passionate computer science student from the University of Helsinki. Dive into his interests in digital photography, travel, and tech. Connect with Niko on LinkedIn, GitHub, or via email.">
+    <title>About Me</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><button class="active nav-button" data-page="about">About me</button></li>
+            <li><button class="nav-button" data-page="projects">My projects</button></li>
+            <li><button class="nav-button" data-page="gallery">Image gallery</button></li>
+        </ul>
+    </nav>
+    <div id="app-content">
+        <main>
+            <div class="content-box">
+                <div class="profile-section">
+                    <img src="images/profile.webp" alt="Niko's portrait" class="portrait">
+                    <div class="bio">
+                        <h1>Niko</h1>
+                        <p>Hello! I am Niko, a passionate university student at the University of Helsinki. Beyond my academic pursuits in computer science, I have a keen interest in digital photography and travel. Exploring new technologies and capturing the essence of places I visit form the crux of my adventures. In my free time, I love hiking, reading tech blogs, and experimenting with different cuisines.</p>
+                        <ul class="contact-links">
+                            <li><a href="https://www.linkedin.com/in/niko-sample/" target="_blank">LinkedIn</a></li>
+                            <li><a href="https://github.com/niko-sample" target="_blank">GitHub</a></li>
+                            <li><a href="mailto:niko.sample@email.com">Email</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+<script>
+    document.querySelectorAll('[data-page]').forEach(button => {
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Remove 'active' class from all buttons
+        document.querySelectorAll('.nav-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Add 'active' class to the clicked button
+        button.classList.add('active');
+
+        const page = e.target.getAttribute('data-page');
+
+        // Fade out current content
+        const contentContainer = document.getElementById('app-content');
+        contentContainer.classList.add('fade-out');
+
+        // Fetch the new content after fade out is complete
+        setTimeout(() => {
+            fetch(`/${page}.html`)
+                .then(response => response.text())
+                .then(content => {
+                    contentContainer.innerHTML = content;
+
+                    // Fade in new content
+                    contentContainer.classList.remove('fade-out');
+                })
+                .catch(error => console.error('Error fetching the content:', error));
+        }, 200);  // The timeout should match the transition duration in the CSS
+    });
+});
+</script>
+</html>
