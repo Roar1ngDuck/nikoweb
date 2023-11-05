@@ -200,12 +200,17 @@ nav a:hover {
 .img-container {
     position: relative;
     margin-bottom: 20px;
+    display: block;
+    clear: both;
+    float: left;
 }
 
 .img-container img {
-    max-width: 100%;
     display: block;
     transition: transform 0.3s ease;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 
 .img-container:hover img {
@@ -213,14 +218,11 @@ nav a:hover {
 }
 
 .img-container.full-width {
-    width: fit-content;
-    display: block;
-    clear: both;
+    width: 100%;
 }
 
 .img-container.half-width {
     width: calc(50% - 10px);
-    float: left;
 }
 
 .img-container.half-width:nth-child(2n) {
