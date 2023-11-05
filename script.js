@@ -28,8 +28,18 @@ const imageList = [
     "IMG_9956.webp",
     "RemoteMediaFile_6553616_0_2021_10_13_10_59_32.webp"
   ];
+
+var page = "about"
   
 function createGallery(images) {
+    showGalleryImages(images);
+
+    setupImageSizeButtons();
+
+    setupModal();
+}
+
+function showGalleryImages(images) {
     // Find the gallery container
     const galleryContainer = document.querySelector('.gallery');
     // Clear out the existing content
@@ -46,15 +56,91 @@ function createGallery(images) {
     imgElement.alt = 'Gallery Image';
     imgContainer.appendChild(imgElement);
 
-    // Create img-overlay div
-    const overlayDiv = document.createElement('div');
-    overlayDiv.className = 'img-overlay';
-    overlayDiv.innerHTML = `<p>Sample text</p>`;
-    imgContainer.appendChild(overlayDiv);
-
     // Append the imgContainer to the gallery
     galleryContainer.appendChild(imgContainer);
     });
+}
+
+function setupModal() {
+    // Get the modal
+    var modal = document.getElementById('imageModal');
+
+    var modalImg = document.getElementById('modalImage');
+
+    // Get all the images that will open the modal
+    var images = document.getElementsByClassName('gallery');
+
+    // Loop through all images
+    for (var i = 0; i < images.length; i++) {
+        var img = images[i];
+        
+        // And attach our click event to each image
+        img.onclick = function(evt){
+            modal.style.display = "block";
+            high_res_src = evt.target.src
+            high_res_src = high_res_src.replace("/gallery/", "/gallery/full_res/")
+            high_res_src = high_res_src.replace(".webp", ".JPEG")
+            modalImg.src = high_res_src;
+        }
+    }
+
+    // Get the <span> element that closes the modal
+    var span = document.createElement("span");
+    span.classList.add("close");
+    span.innerHTML = "&times;";
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Add close button to modal
+    modal.appendChild(span);
+}
+
+function setupImageSizeButtons() {
+    function setImageSizeSmall() {
+        if (page != "gallery"){
+            return;
+        }
+
+        // Select all elements with 'full-width'
+        var elements = document.querySelectorAll('.full-width');
+
+        // Loop through the NodeList and toggle the class
+        elements.forEach(function(element) {
+            element.classList.remove('full-width');
+            element.classList.add('half-width');
+        });
+
+        largeButton.classList.remove("active")
+        smallButton.classList.add("active")
+    }
+
+    function setImageSizeLarge() {
+        if (page != "gallery"){
+            return;
+        }
+
+        // Select all elements with 'half-width'
+        var elements = document.querySelectorAll('.half-width');
+
+        // Loop through the NodeList and toggle the class
+        elements.forEach(function(element) {
+            element.classList.remove('half-width');
+            element.classList.add('full-width');
+        });
+
+        smallButton.classList.remove("active")
+        largeButton.classList.add("active")
+    }
+
+    // Select the button and add an event listener to it
+    var smallButton = document.getElementById('setSmall');
+    smallButton.addEventListener('click', setImageSizeSmall);
+
+    // Select the button and add an event listener to it
+    var largeButton = document.getElementById('setLarge');
+    largeButton.addEventListener('click', setImageSizeLarge);
 }
 
 document.querySelectorAll('[data-page]').forEach(button => {
@@ -69,7 +155,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         // Add 'active' class to the clicked button
         button.classList.add('active');
 
-        const page = e.target.getAttribute('data-page');
+        page = e.target.getAttribute('data-page');
 
         // Fade out current content
         const contentContainer = document.getElementById('app-content');
@@ -88,53 +174,6 @@ document.querySelectorAll('[data-page]').forEach(button => {
                     // Check if the gallery page was loaded, and if so, create the gallery
                     if (page === 'gallery') {
                         createGallery(imageList);
-
-                        function setImageSizeSmall() {
-                            if (page != "gallery"){
-                                return;
-                            }
-                    
-                            // Select all elements with 'full-width'
-                            var elements = document.querySelectorAll('.full-width');
-
-                            // Loop through the NodeList and toggle the class
-                            elements.forEach(function(element) {
-                                element.classList.remove('full-width');
-                                element.classList.add('half-width');
-                            });
-
-                            var largeButton = document.getElementById('setLarge');
-                            var smallButton = document.getElementById('setSmall');
-
-                            largeButton.classList.remove("active")
-                            smallButton.classList.add("active")
-                        }
-                    
-                        function setImageSizeLarge() {
-                            if (page != "gallery"){
-                                return;
-                            }
-                    
-                            // Select all elements with 'half-width'
-                            var elements = document.querySelectorAll('.half-width');
-
-                            // Loop through the NodeList and toggle the class
-                            elements.forEach(function(element) {
-                                element.classList.remove('half-width');
-                                element.classList.add('full-width');
-                            });
-
-                            smallButton.classList.remove("active")
-                            largeButton.classList.add("active")
-                        }
-                    
-                        // Select the button and add an event listener to it
-                        var smallButton = document.getElementById('setSmall');
-                        smallButton.addEventListener('click', setImageSizeSmall);
-                    
-                        // Select the button and add an event listener to it
-                        var largeButton = document.getElementById('setLarge');
-                        largeButton.addEventListener('click', setImageSizeLarge);
                     }
 
                 })
