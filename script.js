@@ -88,6 +88,53 @@ document.querySelectorAll('[data-page]').forEach(button => {
                     // Check if the gallery page was loaded, and if so, create the gallery
                     if (page === 'gallery') {
                         createGallery(imageList);
+
+                        function setImageSizeSmall() {
+                            if (page != "gallery"){
+                                return;
+                            }
+                    
+                            // Select all elements with 'full-width'
+                            var elements = document.querySelectorAll('.full-width');
+
+                            // Loop through the NodeList and toggle the class
+                            elements.forEach(function(element) {
+                                element.classList.remove('full-width');
+                                element.classList.add('half-width');
+                            });
+
+                            var largeButton = document.getElementById('setLarge');
+                            var smallButton = document.getElementById('setSmall');
+
+                            largeButton.classList.remove("active")
+                            smallButton.classList.add("active")
+                        }
+                    
+                        function setImageSizeLarge() {
+                            if (page != "gallery"){
+                                return;
+                            }
+                    
+                            // Select all elements with 'half-width'
+                            var elements = document.querySelectorAll('.half-width');
+
+                            // Loop through the NodeList and toggle the class
+                            elements.forEach(function(element) {
+                                element.classList.remove('half-width');
+                                element.classList.add('full-width');
+                            });
+
+                            smallButton.classList.remove("active")
+                            largeButton.classList.add("active")
+                        }
+                    
+                        // Select the button and add an event listener to it
+                        var smallButton = document.getElementById('setSmall');
+                        smallButton.addEventListener('click', setImageSizeSmall);
+                    
+                        // Select the button and add an event listener to it
+                        var largeButton = document.getElementById('setLarge');
+                        largeButton.addEventListener('click', setImageSizeLarge);
                     }
 
                 })
@@ -95,4 +142,3 @@ document.querySelectorAll('[data-page]').forEach(button => {
         }, 200);
     });
 });
-
