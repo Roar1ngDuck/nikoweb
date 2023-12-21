@@ -143,41 +143,57 @@ function setupImageSizeButtons() {
     largeButton.addEventListener('click', setImageSizeLarge);
 }
 
+function loadPageContent(page) {
+    // Fade out current content
+    const contentContainer = document.getElementById('app-content');
+    contentContainer.classList.add('fade-out');
+
+    setTimeout(() => {
+        fetch(`/${page}.html`)
+        .then(response => response.text())
+        .then(content => {
+            document.getElementById('app-content').innerHTML = content;
+
+            // Fade in new content
+            contentContainer.classList.remove('fade-out');
+
+            // Additional logic if the page is 'gallery'
+            if (page === 'gallery') {
+                createGallery(imageList);
+            }
+
+            updateURL(page);
+            setActiveNavButton(page);
+        })
+        .catch(error => console.error('Error fetching the content:', error));
+    }, 200);
+}
+
+function updateURL(page) {
+    history.pushState({}, '', `#${page}`);
+}
+
+function setActiveNavButton(page) {
+    document.querySelectorAll('.nav-button').forEach(btn => {
+        if (btn.getAttribute('data-page') === page) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
 document.querySelectorAll('[data-page]').forEach(button => {
     button.addEventListener('click', (e) => {
         e.preventDefault();
-
-        // Remove 'active' class from all buttons
-        document.querySelectorAll('.nav-button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // Add 'active' class to the clicked button
-        button.classList.add('active');
-
-        page = e.target.getAttribute('data-page');
-
-        // Fade out current content
-        const contentContainer = document.getElementById('app-content');
-        contentContainer.classList.add('fade-out');
-
-        // Fetch the new content after fade out is complete
-        setTimeout(() => {
-            fetch(`/${page}.html`)
-                .then(response => response.text())
-                .then(content => {
-                    contentContainer.innerHTML = content;
-
-                    // Fade in new content
-                    contentContainer.classList.remove('fade-out');
-
-                    // Check if the gallery page was loaded, and if so, create the gallery
-                    if (page === 'gallery') {
-                        createGallery(imageList);
-                    }
-
-                })
-                .catch(error => console.error('Error fetching the content:', error));
-        }, 200);
+        const page = e.target.getAttribute('data-page');
+        loadPageContent(page);
     });
 });
+
+function loadPageFromURL() {
+    const page = window.location.hash ? window.location.hash.substring(1) : 'about';
+    loadPageContent(page);
+}
+
+loadPageFromURL();
