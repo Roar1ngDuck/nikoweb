@@ -143,7 +143,7 @@ function setupImageSizeButtons() {
     largeButton.addEventListener('click', setImageSizeLarge);
 }
 
-function loadPageContent(page) {
+function loadPageContent(page, updateHistory = true) {
     // Fade out current content
     const contentContainer = document.getElementById('app-content');
     contentContainer.classList.add('fade-out');
@@ -162,7 +162,10 @@ function loadPageContent(page) {
                 createGallery(imageList);
             }
 
-            updateURL(page);
+            if (updateHistory) {
+                updateURL(page);
+            }
+
             setActiveNavButton(page);
         })
         .catch(error => console.error('Error fetching the content:', error));
@@ -191,9 +194,14 @@ document.querySelectorAll('[data-page]').forEach(button => {
     });
 });
 
-function loadPageFromURL() {
+function loadPageFromURL(updateHistory = true) {
     const page = window.location.hash ? window.location.hash.substring(1) : 'about';
-    loadPageContent(page);
+    loadPageContent(page, updateHistory);
 }
 
 loadPageFromURL();
+
+// Handle browser navigation events
+window.onpopstate = function() {
+    loadPageFromURL(false);
+};
